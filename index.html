@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบข้อมูลชั่วโมงการปฏิบัติการสอน - งานวิทยฐานะกาญจนานุเคราะห์</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.0/font/bootstrap-icons.min.css">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="https://raw.githubusercontent.com/infobwd/STUDENT-CARE/main/PNG_KN%20logo.png" type="image/png">
+    
+    <style>
+        :root {
+            --primary-color: #dc3545;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gradient-primary: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);
+            --gradient-secondary: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Kanit', 'Google Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(-10px) rotate(-1deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            animation: pulse 2s infinite;
+        }
+
+        .logo img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        /* Year Cards Container */
+        .years-container {
+            background: white;
+            min-height: 100vh;
+            padding: 5rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Year Cards */
+        .year-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .year-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .year-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .year-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .year-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(220, 53, 69, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .year-card .year-number {
+            font-size: 4rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .year-card .year-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+
+        .year-card .year-description {
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .year-card .features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .year-card .features li {
+            padding: 0.5rem 0;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .year-card .features li i {
+            color: var(--success-color);
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-year {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-year::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-year:hover::before {
+            left: 100%;
+        }
+
+        .btn-year:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(220, 53, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Special Cards */
+        .year-card.current {
+            background: var(--gradient-primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .year-card.current .year-number {
+            -webkit-text-fill-color: white;
+            color: white;
+        }
+
+        .year-card.current .year-title,
+        .year-card.current .year-description,
+        .year-card.current .features li {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .year-card.current .features li i {
+            color: #90EE90;
+        }
+
+        .year-card.current .btn-year {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .year-card.current .btn-year:hover {
+            background: rgba(255,255,255,0.9);
+            color: var(--primary-color);
+        }
+
+        .year-card.upcoming {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: var(--info-color);
+        }
+
+        .year-card.upcoming .year-number {
+            background: linear-gradient(135deg, var(--info-color) 0%, #0277bd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 3rem 0 2rem;
+            text-align: center;
+        }
+
+        .footer h5 {
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .footer p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1rem;
+        }
+
+        .footer .social-links {
+            margin-top: 2rem;
+        }
+
+        .footer .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer .social-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .year-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .year-card {
+                padding: 2rem;
+            }
+            
+            .year-card .year-number {
+                font-size: 3rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator i {
+            font-size: 2rem;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center hero-content">
+                    <div class="logo-container animate__animated animate__fadeInDown">
+                        <div class="logo">
+                            <img src="https://raw.githubusercontent.com/infobwd/STUDENT-CARE/main/PNG_KN%20logo.png" alt="โลโก้โรงเรียน">
+                        </div>
+                    </div>
+                    <h1 class="animate__animated animate__fadeInUp animate__delay-1s">
+                        ระบบข้อมูลชั่วโมงการปฏิบัติการสอน
+                    </h1>
+                    <p class="subtitle animate__animated animate__fadeInUp animate__delay-2s">
+                        งานวิทยฐานะกาญจนานุเคราะห์
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator animate__animated animate__fadeInUp animate__delay-3s">
+            <i class="bi bi-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Years Selection Section -->
+    <section class="years-container">
+        <div class="container">
+            <div class="section-title animate__animated animate__fadeInUp">
+                <h2>เลือกปีงบประมาณ</h2>
+                <p>เลือกปีงบประมาณที่ต้องการเข้าใช้งานระบบข้อมูลชั่วโมงการปฏิบัติการสอน</p>
+            </div>
+
+            <div class="year-grid">
+                <!-- ปีงบประมาณ 2568 (ปีปัจจุบัน) -->
+                <div class="year-card current animate__animated animate__fadeInUp" data-aos-delay="100">
+                    <div class="year-number">2568</div>
+                    <h3 class="year-title">ปีงบประมาণ 2568</h3>
+                    <p class="year-description">ระบบข้อมูลชั่วโมงการปฏิบัติการสอนสำหรับปีการศึกษาปัจจุบัน</p>
+                    <ul class="features">
+                        <li><i class="bi bi-check-circle-fill"></i> ข้อมูลล่าสุด</li>
+                        <li><i class="bi bi-check-circle-fill"></i> ระบบครบถ้วน</li>
+                        <li><i class="bi bi-check-circle-fill"></i> รายงานสดใหม่</li>
+                        <li><i class="bi bi-check-circle-fill"></i> LINE Integration</li>
+                    </ul>
+                    <a href="pa@kn68.html" class="btn-year">
+                        <i class="bi bi-arrow-right-circle me-2"></i>เข้าสู่ระบบ
+                    </a>
+                </div>
+
+                <!-- ปีงบประมาณ 2567 -->
+                <div class="year-card animate__animated animate__fadeInUp" data-aos-delay="200">
+                    <div class="year-number">2567</div>
+                    <h3 class="year-title">ปีงบประมาณ 2567</h3>
+                    <p class="year-description">ข้อมูลย้อนหลังปีการศึกษา 2567 สำหรับการอ้างอิงและเปรียบเทียบ</p>
+                    <ul class="features">
+                        <li><i class="bi bi-archive-fill"></i> ข้อมูลเก่า</li>
+                        <li><i class="bi bi-check-circle-fill"></i> ระบบสมบูรณ์</li>
+                        <li><i class="bi bi-check-circle-fill"></i> เปรียบเทียบได้</li>
+                        <li><i class="bi bi-check-circle-fill"></i> ส่งออกข้อมูล</li>
+                    </ul>
+                    <a href="pa@kn67.html" class="btn-year">
+                        <i class="bi bi-arrow-right-circle me-2"></i>เข้าสู่ระบบ
+                    </a>
+                </div>
+
+                <!-- ปีงบประมาณ 2566 -->
+                <div class="year-card animate__animated animate__fadeInUp" data-aos-delay="300">
+                    <div class="year-number">2566</div>
+                    <h3 class="year-title">ปีงบประมาณ 2566</h3>
+                    <p class="year-description">ข้อมูลย้อนหลังปีการศึกษา 2566 สำหรับการติดตามประวัติ</p>
+                    <ul class="features">
+                        <li><i class="bi bi-archive-fill"></i> ข้อมูลเก่า</li>
+                        <li><i class="bi bi-check-circle-fill"></i> ระบบสมบูรณ์</li>
+                        <li><i class="bi bi-check-circle-fill"></i> อ้างอิงได้</li>
+                        <li><i class="bi bi-check-circle-fill"></i> ส่งออกรายงาน</li>
+                    </ul>
+                    <a href="pa@kn66.html" class="btn-year">
+                        <i class="bi bi-arrow-right-circle me-2"></i>เข้าสู่ระบบ
+                    </a>
+                </div>
+
+                <!-- ปีงบประมาณ 2565 -->
+                <div class="year-card animate__animated animate__fadeInUp" data-aos-delay="400">
+                    <div class="year-number">2565</div>
+                    <h3 class="year-title">ปีงบประมาณ 2565</h3>
+                    <p class="year-description">ข้อมูลย้อนหลังปีการศึกษา 2565 สำหรับการติดตามประวัติ</p>
+                    <ul class="features">
+                        <li><i class="bi bi-archive-fill"></i> ข้อมูลเก่า</li>
+                        <li><i class="bi bi-check-circle-fill"></i> ระบบสมบูรณ์</li>
+                        <li><i class="bi bi-check-circle-fill"></i> อ้างอิงได้</li>
+                        <li><i class="bi bi-check-circle-fill"></i> ส่งออกรายงาน</li>
+                    </ul>
+                    <a href="pa@kn65.html" class="btn-year">
+                        <i class="bi bi-arrow-right-circle me-2"></i>เข้าสู่ระบบ
+                    </a>
+                </div>
+
+                <!-- ปีงบประมาณ 2569 (กำลังจะมา) -->
+                <div class="year-card upcoming animate__animated animate__fadeInUp" data-aos-delay="500">
+                    <div class="year-number">2569</div>
+                    <h3 class="year-title">ปีงบประมาณ 2569</h3>
+                    <p class="year-description">ระบบสำหรับปีการศึกษาหน้า เตรียมพร้อมสำหรับการใช้งาน</p>
+                    <ul class="features">
+                        <li><i class="bi bi-clock-fill"></i> กำลังเตรียมการ</li>
+                        <li><i class="bi bi-gear-fill"></i> ระบบใหม่</li>
+                        <li><i class="bi bi-star-fill"></i> ฟีเจอร์ปรับปรุง</li>
+                        <li><i class="bi bi-shield-check"></i> ความปลอดภัย</li>
+                    </ul>
+                    <a href="#" class="btn-year" onclick="showComingSoon()">
+                        <i class="bi bi-hourglass-split me-2"></i>เร็วๆ นี้
+                    </a>
+                </div>
+
+                <!-- ปีงบประมาณ 2570 (อนาคต) -->
+                <div class="year-card upcoming animate__animated animate__fadeInUp" data-aos-delay="600">
+                    <div class="year-number">2570</div>
+                    <h3 class="year-title">ปีงบประมาณ 2570</h3>
+                    <p class="year-description">วางแผนระยะยาวสำหรับระบบในอนาคต</p>
+                    <ul class="features">
+                        <li><i class="bi bi-lightbulb-fill"></i> นวัตกรรมใหม่</li>
+                        <li><i class="bi bi-cpu-fill"></i> AI Integration</li>
+                        <li><i class="bi bi-cloud-fill"></i> Cloud Native</li>
+                        <li><i class="bi bi-phone-fill"></i> Mobile First</li>
+                    </ul>
+                    <a href="#" class="btn-year" onclick="showComingSoon()">
+                        <i class="bi bi-rocket me-2"></i>อนาคต
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h5>งานวิทยฐานะกาญจนานุเคราะห์</h5>
+                    <p>ระบบจัดการข้อมูลชั่วโมงการปฏิบัติการสอน เพื่อการติดตามและรายงานผลการปฏิบัติงานของครูอาจารย์</p>
+                    <p>© 2024 งานวิทยฐานะกาญจนานุเคราะห์. สงวนลิขสิทธิ์</p>
+                    
+                    <div class="social-links">
+                        <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" title="LINE"><i class="bi bi-line"></i></a>
+                        <a href="#" title="Email"><i class="bi bi-envelope"></i></a>
+                        <a href="#" title="Phone"><i class="bi bi-telephone"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // Loading Screen
+        window.addEventListener('load', function() {
+            const loading = document.getElementById('loading');
+            setTimeout(() => {
+                loading.classList.add('hidden');
+            }, 1000);
+        });
+
+        // Smooth scrolling
+        document.querySelector('.scroll-indicator').addEventListener('click', function() {
+            document.querySelector('.years-container').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all year cards
+        document.querySelectorAll('.year-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Coming Soon Modal
+        function showComingSoon() {
+            Swal.fire({
+                icon: 'info',
+                title: 'เร็วๆ นี้!',
+                text: 'ระบบสำหรับปีงบประมาณนี้กำลังอยู่ระหว่างการพัฒนา',
+                confirmButtonText: 'เข้าใจแล้ว',
+                confirmButtonColor: '#dc3545',
+                background: '#fff',
+                customClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                }
+            });
+        }
+
+        // Add hover effects to year cards
+        document.querySelectorAll('.year-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add click tracking
+        document.querySelectorAll('.btn-year').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (this.getAttribute('href') && this.getAttribute('href') !== '#') {
+                    // Track the click
+                    const year = this.closest('.year-card').querySelector('.year-number').textContent;
+                    console.log(`User clicked on year: ${year}`);
+                    
+                    // Optional: Send analytics
+                    // gtag('event', 'click', {
+                    //     event_category: 'Year Selection',
+                    //     event_label: year
+                    // });
+                }
+            });
+        });
+
+        // Auto-update current year
+        function updateCurrentYear() {
+            const currentYear = new Date().getFullYear();
+            const buddhistYear = currentYear + 543;
+            
+            // Update the current year card if needed
+            const currentCard = document.querySelector('.year-card.current');
+            if (currentCard) {
+                const yearNumber = currentCard.querySelector('.year-number');
+                if (yearNumber && yearNumber.textContent !== buddhistYear.toString()) {
+                    // Update the year if it's different
+                    yearNumber.textContent = buddhistYear;
+                }
+            }
+        }
+
+        // Call on page load
+        updateCurrentYear();
+
+        // Parallax effect on hero section
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            const heroContent = document.querySelector('.hero-content');
+            
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            heroContent.style.transform = `translateY(${scrolled * 0.3}px)`;
+        });
+
+        // Add typing effect to hero title
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
+
+        // Initialize typing effect after page load
+        setTimeout(() => {
+            const heroTitle = document.querySelector('.hero h1');
+            if (heroTitle) {
+                const originalText = heroTitle.textContent;
+                typeWriter(heroTitle, originalText, 80);
+            }
+        }, 2000);
+
+        // Add dynamic stats (optional)
+        function updateStats() {
+            // This could fetch real statistics from your API
+            const statsData = {
+                totalTeachers: 150,
+                totalHours: 12500,
+                totalReports: 450
+            };
+            
+            // Update any stats display if you add them to the UI
+            console.log('Stats updated:', statsData);
+        }
+
+        // Easter egg: Konami Code
+        let konamiCode = [];
+        const konamiSequence = [
+            'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+            'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+            'KeyB', 'KeyA'
+        ];
+
+        document.addEventListener('keydown', function(e) {
+            konamiCode.push(e.code);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (konamiCode.join('') === konamiSequence.join('')) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '🎉 Easter Egg!',
+                    text: 'คุณพบรหัสลับแล้ว! ขอบคุณที่ใช้งานระบบของเรา',
+                    confirmButtonText: 'เยี่ยมมาก!',
+                    confirmButtonColor: '#dc3545',
+                    background: '#fff',
+                    customClass: {
+                        popup: 'animate__animated animate__bounceIn'
+                    }
+                });
+                konamiCode = [];
+            }
+        });
+    </script>
+</body>
+</html>
