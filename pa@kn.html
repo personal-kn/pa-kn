@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1">  
+    <title>งานวิทยฐานะกาญจนานุเคราะห์</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+  
+    <!-- Responsive DataTable -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  
+    <!-- Favicon -->
+    <link rel="icon" href="https://raw.githubusercontent.com/infobwd/STUDENT-CARE/main/PNG_KN%20logo.png" type="image/png">
+    
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+    <style>
+        /* ตั้งค่า font ทั่วไปให้ใช้ Google Sans */
+        body, .navbar, .footer, .dataTables_wrapper {
+            font-family: 'Google Sans', sans-serif;
+        }
+
+        /* กำหนดระยะห่างระหว่างเนื้อหาและ Navbar */
+        #dataTableContainer {
+            margin-top: 120px; /* ระยะห่างจาก Navbar */
+            margin-bottom: 80px; /* ระยะห่างจาก Footer */
+        }
+
+        /* กำหนดสีสำหรับ Navbar เมื่อเปลี่ยนเป็น light mode */
+        .navbar-light-red .navbar-nav .nav-link,
+        .navbar-light-red .navbar-brand {
+            color: #dc3545 !important;
+        }
+
+        /* กำหนดสี icon ของ Navbar ใน light mode */
+        .navbar-light-red .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28220, 53, 69, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* ให้พื้นที่สำหรับ fixed footer */
+        body {
+            padding-bottom: 60px;
+/*               overflow-x: hidden;
+ */
+        }
+
+        /* กำหนดความสูงของ Footer */
+        .footer {
+            height: 60px;
+        }
+
+        /* ปุ่ม Pagination ของ DataTable */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 6px 12px;
+            margin-left: 2px;
+            font-family: 'Google Sans', sans-serif;
+        }
+
+        /* ซ่อนเนื้อหาในตอนแรก */
+        #dataTableContainer {
+            display: none;
+        }
+
+        /* ปรับแต่งสไตล์สำหรับปุ่ม "รายละเอียด" */
+        td.details-control {
+            background: url('https://raw.githubusercontent.com/DataTables/DataTables/master/examples/resources/details_open.png') no-repeat center center;
+            cursor: pointer;
+            width: 30px; /* ขนาดไอคอน */
+            height: 30px; /* ขนาดไอคอน */
+        }
+        tr.shown td.details-control {
+            background: url('https://raw.githubusercontent.com/DataTables/DataTables/master/examples/resources/details_close.png') no-repeat center center;
+        }
+
+        /* ปุ่ม LINE Login */
+        .line-login-button {
+            background-color: #00c300;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-family: 'Google Sans', sans-serif;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* รูปโปรไฟล์ */
+        .profile-img {
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* ปุ่มค้นหา */
+        #searchButton {
+            background-color: #dc3545;
+            color: white;
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-color {
+            background-color: #dc3545;
+            color: white;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .card-hover:hover .card-color {
+            background-color: #a71d2a;
+            color: #f8d7da;
+        }
+
+        .card-number {
+            font-size: 5em;
+            transition: transform 0.3s ease;
+        }
+
+        .card-hover:hover .card-number {
+            transform: scale(1.1);
+        }
+
+
+        #lastUpdated {
+            font-size: 0.9rem;
+        }
+
+        #shareLineSummary {
+            transition: all 0.3s ease;
+        }
+
+        #shareLineSummary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 576px) {
+            #shareLineSummary {
+                width: 100%;
+            }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark bg-danger fixed-top">
+    <div class="container-fluid">
+        <!-- Logo และชื่อแบรนด์ใน Navbar -->
+        <a class="navbar-brand" href="https://nimol.glitch.me/pa@kn.html">
+            <img src="https://raw.githubusercontent.com/infobwd/STUDENT-CARE/main/PNG_KN%20logo.png" alt="Logo" style="height: 30px; margin-right: 10px;">
+            งานวิทยฐานะกาญจนานุเคราะห์
+        </a>
+        <!-- ปุ่ม Hamburger สำหรับแสดงเมนูในหน้าจอขนาดเล็ก -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <!-- ลิงค์สำหรับกรอกข้อมูล -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dataEntryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        กรอกข้อมูล
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dataEntryDropdown" id="submenuContainer">
+                        <!-- Submenu items will be injected here -->
+                    </ul>
+                </li>
+                  <!-- ลิงค์สำหรับข้อมูลชั่วโมง -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="hoursDataDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ข้อมูลชั่วโมง
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="hoursDataDropdown" id="hoursDataSubmenu">
+                        <!-- Hours data submenu items will be injected here -->
+                    </ul>
+                </li>
+                <!-- ลิงค์สำหรับตรวจสอบข้อมูล -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#searchModal">ตรวจสอบและแก้ไขข้อมูล</a>
+                </li>
+            
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <!-- ปุ่มสำหรับ Login ผ่าน LINE -->
+                <li class="nav-item">
+                    <button class="line-login-button" id="lineLoginButton">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg" alt="LINE Logo" style="height: 20px;">
+                        Login with LINE
+                    </button>
+                    <!-- รูปโปรไฟล์จะแสดงเมื่อ Login สำเร็จ -->
+                    <img id="profileImg" class="profile-img" src="" alt="Profile Image" style="display:none;" data-bs-toggle="modal" data-bs-target="#profileModal">
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <!-- Main Content -->
+    <div class="container" id="dataTableContainer">
+        <h2>ข้อมูลชั่วโมงการปฏิบัติการสอน 2568</h2>
+        <table id="dataTable" class="display responsive nowrap" style="width:100%">
+        </table>
+    </div>
+
+
+<!-- Container สำหรับสถิติ -->
+<div id="statisticsContainer" class="container mt-4" style="display: none;">
+    <div class="row gx-2 justify-content-center"> <!-- เพิ่ม justify-content-center เพื่อให้ card อยู่ตรงกลาง -->
+        <!-- การ์ดสำหรับแสดงจำนวนข้อมูลทั้งหมด -->
+        <div class="col-md-5 mb-2"> <!-- ลดความกว้าง card -->
+            <div class="card card-hover" style="max-width: 100%;"> 
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center justify-content-center card-color" style="height: 100%; text-align: center;">
+                            <h1 id="totalEntriesCount" class="card-number">0</h1> <!-- ปรับขนาดตัวเลข -->
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">จำนวนการกรอกข้อมูลทั้งหมด</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- การ์ดสำหรับแสดงจำนวนชื่อและนามสกุลที่ซ้ำกัน -->
+        <div class="col-md-5 mb-2"> <!-- ลดความกว้าง card -->
+            <div class="card card-hover" style="max-width: 100%;"> 
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center justify-content-center card-color" style="height: 100%; text-align: center;">
+                            <h1 id="duplicateEntriesCount" class="card-number" style="cursor: pointer;" 
+                                data-bs-toggle="popover" data-bs-trigger="click" 
+                                data-bs-html="true" title="รายชื่อที่ซ้ำกัน" 
+                                data-bs-content="กำลังโหลด...">0</h1> <!-- ปรับขนาดตัวเลขและเพิ่ม popover -->
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">จำนวนชื่อและนามสกุลที่ซ้ำกัน</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- การ์ดสำหรับแสดงจำนวนแยกตามกลุ่มสาระ -->
+        <div class="col-md-10 mb-2"> <!-- ลดความกว้างของ card -->
+            <div class="card" style="max-width: 100%;"> <!-- เอา hover effects ออก -->
+                <div class="row g-0">
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center justify-content-center card-color" style="height: 100%; text-align: center;">
+                            <h1 id="subjectGroupCountNumber" class="card-number">0</h1> <!-- ปรับขนาดตัวเลข -->
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card-body">
+                            <h5 class="card-title">จำนวนข้อมูลแยกตามกลุ่มสาระการเรียนรู้</h5>
+                            <p id="subjectGroupCount" style="cursor: pointer;">กำลังโหลด...</p> <!-- พื้นที่แสดงกลุ่มสาระ -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container สำหรับแสดงวันที่และเวลาอัปเดตล่าสุด -->
+<div class="container-fluid mt-3 mb-4">
+    <div class="row justify-content-center">
+        <div class="col-11 col-md-8 col-lg-6 text-center">
+            <p id="lastUpdated" class="text-muted mb-3">อัปเดตล่าสุดเมื่อ: กำลังโหลด...</p>
+            <!-- ปุ่ม shareLineSummary ที่จะถูกซ่อนในตอนแรก -->
+            <button id="shareLineSummary" class="btn btn-success" style="display: none;">แชร์เพื่อให้ดูและกรอกข้อมูล</button>
+        </div>
+    </div>
+</div>
+
+
+<br>
+
+    <!-- Modal สำหรับค้นหาข้อมูล -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="searchModalLabel">ค้นหาข้อมูล</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <!-- ช่องสำหรับกรอกเลขประจำตัวประชาชน -->
+                        <label for="citizenIdInput" class="form-label">เลขประจำตัวประชาชน</label>
+                        <input type="text" class="form-control" id="citizenIdInput" placeholder="กรอกเลขประจำตัวประชาชน" inputmode="numeric" pattern="[0-9]*">
+                    </div>
+                    <!-- ปุ่มค้นหา -->
+                    <button id="searchButton" class="btn btn-primary w-100">ค้นหา</button>
+                    <div id="loadingIndicator" class="text-center mt-3" style="display: none;">
+                        <!-- แสดงการโหลดข้อมูล -->
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">กำลังโหลด...</span>
+                        </div>
+                        <p>กำลังค้นหาข้อมูล...</p>
+                    </div>
+                    <!-- แสดงผลการค้นหา -->
+                    <div id="searchResult" class="mt-4" style="display: none;">
+                        <h5>ผลการค้นหา</h5>
+                        <!-- แสดงข้อความหากพบข้อมูลมากกว่า 1 ชุด -->
+                        <div id="multipleResultsAlert" class="alert alert-info" style="display: none;">
+                            พบข้อมูลมากกว่า 1 ชุด กรุณาเลือกชุดข้อมูลที่ต้องการดู
+                        </div>
+                        <div id="resultsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- เพิ่ม Modal นี้ไว้ในส่วนท้ายของ body ในไฟล์ HTML -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">แก้ไขข้อมูล</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <!-- ฟิลด์สำหรับแก้ไขข้อมูลจะถูกเพิ่มที่นี่ด้วย JavaScript -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary" id="saveChanges">บันทึกการเปลี่ยนแปลง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <!-- Modal สำหรับข้อมูลส่วนตัว -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profileModalLabel">ข้อมูลส่วนตัว</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- แสดงรูปโปรไฟล์ -->
+                    <div class="text-center">
+                        <img id="modalProfileImg" class="profile-img" src="" alt="Profile Image">
+                    </div>
+                    <!-- แสดงชื่อและสถานะของผู้ใช้งาน -->
+                    <p><strong>ชื่อ:</strong> <span id="profileName"></span></p>
+                    <p><strong>สถานะ:</strong> <span id="profileStatus"></span></p>
+                    <!-- ปุ่ม Logout -->
+                    <button id="logoutButton" class="btn btn-danger w-100">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal สำหรับแสดงรายชื่อ -->
+<div class="modal fade" id="subjectGroupModal" tabindex="-1" aria-labelledby="subjectGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="subjectGroupModalLabel">รายชื่อในกลุ่มสาระ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- แทนที่ <ul> ด้วยตาราง DataTable -->
+                <table id="subjectGroupTable" class="display responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>คำนำหน้า</th>
+                            <th>ชื่อ</th>
+                            <th>นามสกุล</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- รายการจะถูกเพิ่มที่นี่ -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                <button id="shareLine" class="btn btn-success">Share to LINE</button>
+                <button type="button" id="exportExcel" class="btn btn-primary">Export to Excel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+  
+    <!-- Footer -->
+    <footer class="footer fixed-bottom bg-light py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="text-muted">© 2024 งานวิทยฐานะกาญจนานุเคราะห์. </span>
+<!--                 <img src="https://counter2.optistats.ovh/private/freecounterstat.php?c=q6yebarq3jfltxmw44cbzw3ynr2yhrwa" border="0" title="free page counters" alt="free page counters"> -->
+        </div>
+    </footer>
+
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.flash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+  
+    <!-- เพิ่ม script สำหรับ Responsive DataTable -->
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <!-- LIFF SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script> <!-- LIFF SDK -->
+
+    <script>$(document).ready(function() {
+    let jsonData = [];
+    let dataTable;
+    let currentEditingData = null;
+
+    // กำหนด fieldOrder ไว้นอก event listener
+    const fieldOrder = [
+        { index: 0, name: "timestamp" },
+        { index: 1, name: "email" },
+        { index: 2, name: "เลขบัตร" },
+        { index: 3, name: "คำนำหน้า" },
+        { index: 4, name: "ชื่อ" },
+        { index: 5, name: "นามสกุล" },
+        { index: 6, name: "กลุ่มสาระการเรียนรู้" },
+        { index: 7, name: "ระดับชั้นที่สอน 2/67" },
+        { index: 8, name: "รายวิชาที่สอน 2/67" },
+        { index: 9, name: "ระดับชั้นที่สอน 1/68" },
+        { index: 10, name: "รายวิชาที่สอน 1/68" },
+        { index: 11, name: "เบอร์โทรศัพท์" },
+        { index: 12, name: "ส่วนที่ 1.ชั่วโมงสอนตามตารางสอน" },
+        { index: 13, name: "ส่วนที่ 2.งานส่งเสริมและสนับสนุนการจัดการเรียนรู้" },
+        { index: 14, name: "ส่วนที่ 3.งานพัฒนาคุณภาพการศึกษาของสถานศึกษา (งาน)" },
+        { index: 15, name: "ส่วนที่ 3.งานพัฒนาคุณภาพการศึกษาของสถานศึกษา (ชั่วโมง)" },
+        { index: 16, name: "ส่วนที่ 4.งานตอบสนองนโยบายและจุดเน้น" }
+    ];
+
+    // เริ่มต้น LIFF และโหลดข้อมูล
+    initializeLiff();
+    loadDataTable();
+    loadSubmenuLinks();
+
+
+    function initializeLiff() {
+        liff.init({ liffId: '2005886327-VkMpp3gK' })
+            .then(() => {
+                if (!liff.isLoggedIn()) {
+                    $('#lineLoginButton').show();
+                } else {
+                    $('#lineLoginButton').hide();
+                    fetchUserProfile();
+                }
+            })
+            .catch(err => {
+                console.error('LIFF Initialization failed', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถเริ่มต้น LIFF ได้ กรุณาลองใหม่อีกครั้ง'
+                });
+            });
+    }
+
+    function fetchUserProfile() {
+        liff.getProfile()
+            .then(profile => {
+                const profileImageUrl = profile.pictureUrl || 'https://raw.githubusercontent.com/infobwd/STUDENT-CARE/main/user.png';
+                $('#profileImg').attr('src', profileImageUrl).show();
+                $('#modalProfileImg').attr('src', profileImageUrl);
+                $('#profileName').text(profile.displayName);
+                $('#profileStatus').text(profile.statusMessage || "ไม่มีสถานะ");
+
+                if (!localStorage.getItem('hasLoggedIn')) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: `ยินดีต้อนรับ ${profile.displayName}!`,
+                        text: 'คุณได้เข้าสู่ระบบสำเร็จแล้ว',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                    localStorage.setItem('hasLoggedIn', 'true');
+                }
+            })
+            .catch(err => {
+                console.error('Error getting profile:', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถดึงข้อมูลโปรไฟล์ได้'
+                });
+            });
+    }
+
+    $('#lineLoginButton').click(function() {
+        liff.login();
+    });
+
+    $('#logoutButton').click(function() {
+        liff.logout();
+        localStorage.removeItem('hasLoggedIn');
+        window.location.reload();
+    });
+
+function loadDataTable() {
+    Swal.fire({
+        title: 'กำลังโหลดข้อมูล...',
+        text: 'กรุณารอสักครู่',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: 'https://script.google.com/macros/s/AKfycbyEkaEfaPx8fS0dEqqW2HpLo6PioNcCbdLutFkcrl4ebsV-yPzuI8RzEaugZ9uE8snrPA/exec',
+        method: 'GET',
+        dataType: 'jsonp',
+        success: function(data) {
+            jsonData = data;
+            
+            if (dataTable) {
+                dataTable.destroy();
+                $('#dataTable').empty();
+            }
+
+            dataTable = $('#dataTable').DataTable({
+                data: jsonData,
+                columns: [
+                    {
+                        className: 'details-control',
+                        orderable: false,
+                        data: null,
+                        defaultContent: ''
+                    },
+                    { data: 3, title: "คำนำหน้า" },
+                    { data: 4, title: "ชื่อ" },
+                    { data: 5, title: "นามสกุล" }
+                ],
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy',
+                    'csv',
+                    'excel',
+                    {
+                        extend: 'print',
+                        text: 'Print',
+                        exportOptions: {
+                            columns: [1, 2, 3] // พิมพ์เฉพาะคอลัมน์ที่ระบุ
+                        },
+                        customize: function (win) {
+                            var body = $(win.document.body);
+                            var table = body.find('table');
+
+                            // Loop over each row in the table to add additional details
+                            table.find('tbody tr').each(function (index) {
+                                var row = dataTable.row(index); // Get the row by index
+                                var data = row.data(); // Get the data for that row
+
+                                if (data) {
+                                    var additionalDetails = format(data); // Use format function to get additional details
+                                    var additionalRow = '<tr><td colspan="3">' + additionalDetails + '</td></tr>';
+                                    $(this).after(additionalRow); // Add a new row with the details
+                                }
+                            });
+
+                            // Apply custom styling if needed
+                            body.css('font-size', '10pt');
+                            table.addClass('compact').css('font-size', 'inherit');
+                        }
+                    }
+                ]
+            });
+
+            $('#dataTable tbody').on('click', 'td.details-control', function() {
+                var tr = $(this).closest('tr');
+                var row = dataTable.row(tr);
+
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+
+            $('#dataTableContainer').fadeIn();
+            $('#statisticsContainer').fadeIn();
+            updateStatistics();
+
+            // แสดงปุ่ม shareLineSummary เมื่อข้อมูลโหลดเสร็จ
+            $('#shareLineSummary').fadeIn();
+
+            Swal.close();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('AJAX error:', textStatus, errorThrown);
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: 'ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง'
+            });
+        }
+    });
+}
+
+    function format(d) {
+        return `
+            <div>
+                <p><strong>กลุ่มสาระการเรียนรู้:</strong> ${d[6] || 'ไม่มีข้อมูล'}</p>
+                <p><strong>ระดับชั้นที่สอน 2/67:</strong> ${d[7] || 'ไม่มีข้อมูล'}</p>
+                <p><strong>รายวิชาที่สอน 2/67:</strong> ${d[8] || 'ไม่มีข้อมูล'}</p>
+                <p><strong>ระดับชั้นที่สอน 1/68:</strong> ${d[9] || 'ไม่มีข้อมูล'}</p>
+                <p><strong>รายวิชาที่สอน 1/68:</strong> ${d[10] || 'ไม่มีข้อมูล'}</p>
+                <p><strong>ส่วนที่ 1.ชั่วโมงสอนตามตารางสอน:</strong> ${d[12] || 'ไม่มีข้อมูล'}</p>
+                <p><strong>ส่วนที่ 2.งานส่งเสริมและสนับสนุนการจัดการเรียนรู้:</strong> ${d[13] || 'ไม่มีข้อมูล'}</p>
+                <p><strong>ส่วนที่ 3.งานพัฒนาคุณภาพการศึกษาของสถานศึกษา (งาน):</strong> ${d[14] || 'ไม่มีข้อมูล'}</p>
+                <p><strong>ส่วนที่ 3.งานพัฒนาคุณภาพการศึกษาของสถานศึกษา (ชั่วโมง):</strong> ${d[15] || 'ไม่มีข้อมูล'}</p>
+                <p><strong>ส่วนที่ 4.งานตอบสนองนโยบายและจุดเน้น:</strong> ${d[16] || 'ไม่มีข้อมูล'}</p>
+            </div>
+        `;
+    }
+
+
+let subjectGroupData = {}; // Move this outside of the function to make it globally accessible
+
+function updateStatistics() {
+    let nameCounts = {};
+    let duplicates = 0;
+    let duplicateNames = [];
+    let uniqueEntries = 0;
+    let subjectGroupCounts = {};
+    let latestTimestamp = null;
+
+    jsonData.forEach(row => {
+        let fullName = `${row[4]} ${row[5]}`;
+        let subjectGroup = row[6];
+
+        // คอลัมน์ A คือคอลัมน์ที่เก็บ Timestamp
+        let timestamp = new Date(row[0]);
+        if (!latestTimestamp || timestamp > latestTimestamp) {
+            latestTimestamp = timestamp;
+        }
+
+        if (nameCounts[fullName]) {
+            if (nameCounts[fullName] === 1) {
+                duplicates++;
+                duplicateNames.push(fullName);
+            }
+            nameCounts[fullName]++;
+        } else {
+            nameCounts[fullName] = 1;
+            uniqueEntries++;
+        }
+
+        if (subjectGroup) {
+            if (!subjectGroupCounts[subjectGroup]) {
+                subjectGroupCounts[subjectGroup] = 0;
+                subjectGroupData[subjectGroup] = [];
+            }
+            subjectGroupCounts[subjectGroup]++;
+            subjectGroupData[subjectGroup].push({
+                prefix: row[3],
+                firstName: row[4],
+                lastName: row[5]
+            });
+        }
+    });
+
+    $('#totalEntriesCount').text(uniqueEntries);
+    $('#duplicateEntriesCount').text(duplicates);
+
+    let popoverContent = duplicateNames.map(name => `<li>${name}</li>`).join('');
+    popoverContent = `<ul>${popoverContent}</ul>`;
+    $('#duplicateEntriesCount').attr('data-bs-content', popoverContent);
+
+    new bootstrap.Popover(document.getElementById('duplicateEntriesCount'), {
+        trigger: 'click',
+        html: true,
+        content: popoverContent,
+        title: 'รายชื่อที่ซ้ำกัน'
+    });
+
+    let maxCount = Math.max(...Object.values(subjectGroupCounts));
+    let subjectGroupText = '<ul>';
+
+    Object.entries(subjectGroupCounts)
+        .sort((a, b) => b[1] - a[1])
+        .forEach((group, index) => {
+            let iconHtml = '';
+            if (index === 0) {
+                iconHtml = '<i class="bi bi-fire" style="color: red;"></i> '.repeat(3);
+            } else if (index === 1) {
+                iconHtml = '<i class="bi bi-fire" style="color: red;"></i> '.repeat(2);
+            } else if (index === 2) {
+                iconHtml = '<i class="bi bi-fire" style="color: red;"></i>';
+            }
+            subjectGroupText += `<li class="list-group-item" style="cursor:pointer;" data-subject-group="${group[0]}">${index + 1}. ${group[0]}: ${group[1]} ท่าน ${iconHtml}</li>`;
+        });
+
+    subjectGroupText += '</ul>';
+    $('#subjectGroupCount').html(subjectGroupText);
+
+    $('#subjectGroupCountNumber').text(Object.keys(subjectGroupCounts).length);
+
+    // แสดงวันที่และเวลาอัปเดตล่าสุดจากคอลัมน์ A
+    if (latestTimestamp) {
+        let thaiDate = latestTimestamp.toLocaleDateString('th-TH', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+        });
+        $('#lastUpdated').text(`อัปเดตล่าสุดเมื่อ: ${thaiDate}`);
+    } else {
+        $('#lastUpdated').text('อัปเดตล่าสุดเมื่อ: ไม่พบข้อมูล');
+    }
+
+    $('#subjectGroupCount').find('li').on('click', function () {
+        const group = $(this).data('subject-group');
+        const list = subjectGroupData[group] || [];
+
+        if ($.fn.dataTable.isDataTable('#subjectGroupTable')) {
+            $('#subjectGroupTable').DataTable().clear().destroy();
+        }
+
+        const dataTableBody = $('#subjectGroupTable tbody');
+        dataTableBody.empty();
+
+        if (list.length > 0) {
+            list.forEach((person, index) => {
+                const rowHtml = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${person.prefix}</td>
+                        <td>${person.firstName}</td>
+                        <td>${person.lastName}</td>
+                    </tr>
+                `;
+                dataTableBody.append(rowHtml);
+            });
+        }
+
+        $('#subjectGroupTable').DataTable({
+            responsive: true,
+            paging: true,
+            searching: true,
+            pageLength: 10,
+            destroy: true,
+            language: {
+                search: "ค้นหา:",
+                lengthMenu: "แสดง _MENU_ รายการต่อหน้า",
+                info: "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ",
+                paginate: {
+                    first: "หน้าแรก",
+                    last: "หน้าสุดท้าย",
+                    next: "ถัดไป",
+                    previous: "ก่อนหน้า"
+                },
+                infoEmpty: "ไม่มีข้อมูล",
+                zeroRecords: "ไม่พบข้อมูลที่ค้นหา"
+            }
+        });
+
+        $('#subjectGroupModalLabel').text(`รายชื่อในกลุ่มสาระ: ${group}`);
+        $('#subjectGroupModal').modal('show');
+    });
+}
+
+// Function to export data to Excel
+function exportToExcel(group, data) {
+    const sheetName = group.substring(0, 31);  // Excel sheet name cannot exceed 31 characters
+    const worksheetData = data.map((person, index) => ({
+        "ลำดับที่": index + 1,
+        "คำนำหน้า": person.prefix,
+        "ชื่อ": person.firstName,
+        "นามสกุล": person.lastName
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(worksheetData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+
+    XLSX.writeFile(wb, `${sheetName}.xlsx`);
+}
+
+// Bind the export button click event
+$('#exportExcel').on('click', function() {
+    const group = $('#subjectGroupModalLabel').text().replace('รายชื่อในกลุ่มสาระ: ', '');
+    const list = subjectGroupData[group];
+
+    if (list && list.length > 0) {
+        exportToExcel(group, list);
+    } else {
+        alert('ไม่มีข้อมูลสำหรับการส่งออกในกลุ่มสาระนี้');
+    }
+});
+
+// Function to share the summary via LINE using Share Target Picker
+function shareToLine() {
+    const group = $('#subjectGroupModalLabel').text().replace('รายชื่อในกลุ่มสาระ: ', '');
+    const list = subjectGroupData[group];
+    const totalEntries = $('#totalEntriesCount').text(); // ตรวจสอบว่า ID ถูกต้องหรือไม่
+
+    console.log("Group:", group);
+    console.log("List:", list);
+    console.log("Total Entries:", totalEntries);
+
+    if (list && list.length > 0) {
+        const flexMessage = {
+            type: "flex",
+            altText: "ข้อมูลชั่วโมงการปฏิบัติการสอน",
+            contents: {
+                type: "bubble",
+                size: "giga",
+                hero: {
+                    type: "image",
+                    url: "https://raw.githubusercontent.com/infobwd/STUDENT-CARE/main/PA.jpg",
+                    size: "full",
+                    aspectRatio: "1.91:1",
+                    aspectMode: "cover"
+                },
+                body: {
+                    type: "box",
+                    layout: "vertical",
+                    contents: [
+                        {
+                            type: "text",
+                            text: "Summary",
+                            weight: "bold",
+                            size: "xl"
+                        },
+                        {
+                            type: "text",
+                            text: `กรอกข้อมูลทั้งหมด: ${totalEntries} ท่าน`,
+                            margin: "md"
+                        },
+                        {
+                            type: "text",
+                            text: `มี ${group} ที่กรอกแล้ว`,
+                            margin: "md",
+                            wrap: true,
+                            size: "md"
+                        },
+                        {
+                            type: "text",
+                            text: `จำนวน: ${list.length} ท่าน`,
+                            margin: "md"
+                        }
+                    ]
+                },
+                footer: {
+                    type: "box",
+                    layout: "vertical",
+                    contents: [
+                        {
+                            type: "box",
+                            layout: "vertical",
+                            spacing: "sm",
+                            contents: [
+                                {
+                                    type: "button",
+                                    style: "primary",
+                                    color: "#DC3545",
+                                    height: "sm",
+                                    action: {
+                                        type: "uri",
+                                        label: "ดูข้อมูล",
+                                        uri: "https://liff.line.me/2005886327-kL9QQMbl"
+                                    }
+                                },
+                                {
+                                    type: "button",
+                                    style: "primary",
+                                    color: "#6C757D",
+                                    height: "sm",
+                                    action: {
+                                        type: "uri",
+                                        label: "กรอกข้อมูล",
+                                        uri: "https://liff.line.me/2005886327-n7Emm0QW"
+                                    }
+                                },
+                                {
+                                    type: "spacer",
+                                    size: "sm"
+                                }
+                            ]
+                        },
+                        {
+                            type: "text",
+                            text: "© 2024 งานวิทยฐานะกาญจนานุเคราะห์.",
+                            color: "#aaaaaa",
+                            size: "xs",
+                            align: "center",
+                            margin: "md"
+                        }
+                    ],
+                    flex: 0
+                }
+            }
+        };
+
+        liff.init({
+            liffId: '2005886327-VkMpp3gK'
+        }).then(() => {
+            liff.shareTargetPicker([{
+                type: 'flex',
+                altText: 'ข้อมูลชั่วโมงการปฏิบัติการสอน',
+                contents: flexMessage.contents
+            }]).then((result) => {
+                if (result) {
+                    console.log('Message sent: ', result);
+                } else {
+                    console.log('TargetPicker was closed');
+                }
+                liff.closeWindow();
+            }).catch((err) => {
+                console.error('Error sending message: ', err);
+                liff.closeWindow();
+            });
+        }).catch((err) => {
+            console.error('LIFF Initialization failed ', err);
+        });
+    } else {
+        console.error('ไม่มีข้อมูลสำหรับการแชร์ในกลุ่มสาระนี้:', group, list);
+        alert('ไม่มีข้อมูลสำหรับการแชร์ในกลุ่มสาระนี้');
+    }
+}
+
+// Bind the share button click event
+$('#shareLine').on('click', function() {
+    shareToLine();
+});
+        
+function shareSummaryToLine() {
+    liff.init({
+        liffId: '2005886327-VkMpp3gK'
+    }).then(() => {
+        if (!liff.isLoggedIn()) {
+            liff.login();
+        } else {
+            const dataEntryLinks = $('#submenuContainer a.dropdown-item'); // ลิงก์กรอกข้อมูล
+            const hoursDataLinks = $('#hoursDataSubmenu a.dropdown-item'); // ลิงก์ดูข้อมูล
+
+            let buttons = [];
+
+            dataEntryLinks.each(function(index, link) {
+                buttons.push({
+                    type: "button",
+                    style: "primary",
+                    color: "#DC3545",
+                    height: "sm",
+                    margin: "md", // เพิ่ม margin เพื่อเว้นระยะห่าง
+                    action: {
+                        type: "uri",
+                        label: `กรอกข้อมูล ปี ${$(link).text().split(' ')[1]}`,
+                        uri: $(link).attr('href')
+                    }
+                });
+            });
+
+            hoursDataLinks.each(function(index, link) {
+                buttons.push({
+                    type: "button",
+                    style: "primary",
+                    color: "#6C757D",
+                    height: "sm",
+                    margin: "md", // เพิ่ม margin เพื่อเว้นระยะห่าง
+                    action: {
+                        type: "uri",
+                        label: `ดูข้อมูล ปี ${$(link).text().split(' ')[1]}`,
+                        uri: $(link).attr('href')
+                    }
+                });
+            });
+
+            const flexMessage = {
+                type: "flex",
+                altText: "ข้อมูลชั่วโมงการปฏิบัติการสอน",
+                contents: {
+                    type: "bubble",
+                    size: "giga",
+                    hero: {
+                        type: "image",
+                        url: "https://raw.githubusercontent.com/infobwd/STUDENT-CARE/main/PA.jpg",
+                        size: "full",
+                        aspectRatio: "1.91:1",
+                        aspectMode: "cover"
+                    },
+                    body: {
+                        type: "box",
+                        layout: "vertical",
+                        contents: [
+                            {
+                                type: "text",
+                                text: "ข้อมูลชั่วโมงการปฏิบัติการสอน",
+                                weight: "bold",
+                                size: "xl"
+                            },
+                            {
+                                type: "text",
+                                text: "กรุณาเลือกการดำเนินการด้านล่าง",
+                                margin: "md"
+                            },
+                            ...buttons  // รวมปุ่มทั้งหมดที่สร้างไว้ พร้อมกับระยะห่างที่กำหนด
+                        ]
+                    },
+                    footer: {
+                        type: "box",
+                        layout: "vertical",
+                        contents: [
+                            {
+                                type: "text",
+                                text: "© 2024 งานวิทยฐานะกาญจนานุเคราะห์.",
+                                size: "xs",
+                                color: "#aaaaaa",
+                                align: "center",
+                                margin: "xs"
+                            }
+                        ]
+                    }
+                }
+            };
+
+            liff.shareTargetPicker([{
+                type: 'flex',
+                altText: 'ข้อมูลชั่วโมงการปฏิบัติการสอน',
+                contents: flexMessage.contents
+            }]).then((result) => {
+                if (result) {
+                    console.log('Message sent: ', result);
+                } else {
+                    console.log('TargetPicker was closed');
+                }
+                liff.closeWindow();
+            }).catch((err) => {
+                console.error('Error sending message: ', err);
+                liff.closeWindow();
+            });
+        }
+    }).catch((err) => {
+        console.error('LIFF Initialization failed ', err);
+    });
+}
+
+$('#shareLineSummary').on('click', function() {
+    shareSummaryToLine();
+});
+
+
+      
+
+function resetSearch() {
+    $('#citizenIdInput').val(''); // ล้างช่องกรอกเลขประจำตัวประชาชน
+    $('#searchResult').hide(); // ซ่อนผลการค้นหา
+    $('#multipleResultsAlert').hide(); // ซ่อนข้อความแจ้งเตือน
+    $('#resultsList').empty(); // ล้างรายการผลลัพธ์
+    $('#loadingIndicator').hide(); // ซ่อนการแสดงผลการโหลดข้อมูล
+}
+
+
+    $('#searchModal').on('shown.bs.modal', function () {
+        $('#citizenIdInput').focus();
+    });
+        
+    $('#searchModal').on('hidden.bs.modal', function () {
+    $('#citizenIdInput').val('');
+    $('#searchResult').hide();
+    $('#multipleResultsAlert').hide();
+    $('#resultsList').empty();
+    $('#loadingIndicator').hide();
+      resetSearch();
+    });
+        
+    $('#searchButton').click(function() {
+        const citizenId = $('#citizenIdInput').val();
+        
+        $('#searchResult').hide();
+        $('#loadingIndicator').show();
+        
+        setTimeout(() => {
+            try {
+                if (!jsonData || jsonData.length === 0) {
+                    throw new Error("ข้อมูลยังไม่พร้อม กรุณาลองใหม่อีกครั้ง");
+                }
+
+                console.log("จำนวนข้อมูลทั้งหมด:", jsonData.length);
+
+                const results = jsonData.filter(row => {
+                    console.log("ตรวจสอบแถว:", row);
+                    return row[2].toString() === citizenId;
+                });
+
+                console.log("ผลลัพธ์การค้นหา:", results);
+
+                if (results.length > 0) {
+                    let resultsList = $('#resultsList');
+                    resultsList.empty();
+
+                    $('#multipleResultsAlert').toggle(results.length > 1);
+
+                    results.forEach((result, index) => {
+                        let resultHtml = `<div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse${index}" aria-expanded="${index === 0 ? 'true' : 'false'}" 
+                                        aria-controls="collapse${index}">
+                                        ชุดข้อมูลที่ ${index + 1}
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapse${index}" class="collapse ${index === 0 ? 'show' : ''}" 
+                                aria-labelledby="heading${index}" data-bs-parent="#resultsList">
+                                <div class="card-body">`;
+
+                        fieldOrder.forEach(field => {
+                            resultHtml += `<p><strong>${field.name}:</strong> ${result[field.index] || 'ไม่มีข้อมูล'}</p>`;
+                        });
+
+                        resultHtml += `
+    <button class="btn btn-primary edit-data me-2" 
+        data-citizen-id="${result[2]}" 
+        data-timestamp="${result[0]}">แก้ไขข้อมูล</button>
+    <button class="btn btn-danger delete-data" 
+        data-citizen-id="${result[2]}" 
+        data-timestamp="${result[0]}">ลบข้อมูล</button>
+                            
+                        `;
+                        resultHtml += `</div></div></div>`;
+                        resultsList.append(resultHtml);
+                    });
+
+                    $('#searchResult').show();
+                } else {
+                    throw new Error("ไม่พบข้อมูลที่ตรงกับเลขประจำตัวประชาชนที่กรอก");
+                }
+            } catch (error) {
+                console.error("เกิดข้อผิดพลาด:", error);
+Swal.fire({
+                    icon: 'warning',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: error.message,
+                });
+                $('#searchResult').hide();
+            } finally {
+                $('#loadingIndicator').hide();
+            }
+        }, 100);
+    });
+
+$(document).on('click', '.delete-data', function() {
+    const timestamp = $(this).data('timestamp');
+    const citizenId = $(this).data('citizen-id');
+    console.log("Timestamp from client:", timestamp);
+    console.log("CitizenId from client:", citizenId);
+    
+    Swal.fire({
+        title: 'ยืนยันการลบข้อมูล',
+        text: "คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'ใช่, ลบข้อมูล',
+        cancelButtonText: 'ยกเลิก'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteData(timestamp, citizenId);
+        }
+    });
+});
+
+function deleteData(timestamp, citizenId) {
+    console.log("กำลังลบข้อมูลสำหรับ timestamp:", timestamp, "และ citizenId:", citizenId);
+    
+    let data = {
+        action: 'delete',
+        citizenId: citizenId
+    };
+
+    if (timestamp) {
+        // ส่ง timestamp ในรูปแบบ ISO string
+        data.timestamp = new Date(timestamp).toISOString();
+    }
+
+    $.ajax({
+        url: 'https://script.google.com/macros/s/AKfycbyEkaEfaPx8fS0dEqqW2HpLo6PioNcCbdLutFkcrl4ebsV-yPzuI8RzEaugZ9uE8snrPA/exec',
+        method: 'GET',
+        dataType: 'json',
+        data: data,
+        success: function(response) {
+            console.log("การตอบสนองจากเซิร์ฟเวอร์:", response);
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'สำเร็จ!',
+                    text: response.message
+                }).then(() => {
+                    $('#searchModal').modal('hide');
+                    loadDataTable();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: response.message || 'ไม่สามารถลบข้อมูลได้'
+                });
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("เกิดข้อผิดพลาดในการส่งคำขอ:", textStatus, errorThrown);
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้'
+            });
+        }
+    });
+}
+
+    $(document).on('click', function (e) {
+        if ($(e.target).data('bs-toggle') !== 'popover'
+            && $(e.target).parents('.popover.show').length === 0) { 
+            $('[data-bs-toggle="popover"]').popover('hide');
+        }
+    });
+
+    $('#dataTable tbody').on('click', 'td.details-control', function() {
+        var tr = $(this).closest('tr');
+        var row = dataTable.row(tr);
+
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            row.child(format(row.data())).show();
+            tr.addClass('shown');
+        }
+    });
+
+
+        $(document).on('click', '.edit-data', function() {
+            const citizenId = $(this).data('citizen-id');
+            const timestamp = $(this).data('timestamp');
+
+            // ปิด modal การค้นหา
+            $('#searchModal').modal('hide');
+
+            // รอให้ modal การค้นหาปิดสนิทก่อนที่จะดำเนินการต่อ
+            $('#searchModal').on('hidden.bs.modal', function (e) {
+                // ทำการ unbind event นี้เพื่อป้องกันการทำงานซ้ำ
+                $(this).off('hidden.bs.modal');
+
+                // เรียกใช้ฟังก์ชัน populateEditForm และเปิด modal การแก้ไข
+                populateEditForm(timestamp, citizenId);
+                $('#editModal').modal('show');
+            });
+        });
+
+
+    function populateEditForm(timestamp, citizenId) {
+    const result = jsonData.find(item => 
+        item[0].toString() === timestamp.toString() && 
+        item[2].toString() === citizenId.toString()
+    );
+    
+    if (result) {
+        currentEditingData = result;
+        const form = $('#editForm');
+        form.empty();
+
+        const prefixes = ['นาย', 'นาง', 'นางสาว', 'ว่าที่ร้อยตรี', 'ว่าที่ร้อยโท', 'ว่าที่ร้อยเอก'];
+        const departments = [
+            'กลุ่มสาระการเรียนรู้ภาษาไทย',
+            'กลุ่มสาระการเรียนรู้คณิตศาสตร์',
+            'กลุ่มสาระการเรียนรู้วิทยาศาสตร์และเทคโนโลยี',
+            'กลุ่มสาระการเรียนรู้สังคมศึกษา ศาสนา และวัฒนธรรม',
+            'กลุ่มสาระการเรียนรู้สุขศึกษาและพลศึกษา',
+            'กลุ่มสาระการเรียนรู้ศิลปะ',
+            'กลุ่มสาระการเรียนรู้การงานอาชีพ',
+            'กลุ่มสาระการเรียนรู้ภาษาต่างประเทศ',
+            'กลุ่มพัฒนาผู้เรียน'
+        ];
+        const classLevels = [
+            'ชั้นมัธยมศึกษาปีที่ 1',
+            'ชั้นมัธยมศึกษาปีที่ 2',
+            'ชั้นมัธยมศึกษาปีที่ 3',
+            'ชั้นมัธยมศึกษาปีที่ 4',
+            'ชั้นมัธยมศึกษาปีที่ 5',
+            'ชั้นมัธยมศึกษาปีที่ 6'
+        ];
+
+        fieldOrder.forEach((field, index) => {
+            const value = result[field.index] !== undefined ? result[field.index] : '';
+            let safeFieldName = field.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+            if (!safeFieldName) {
+                safeFieldName = `field_${index}`;
+            }
+            let inputHtml = '';
+
+            if (["timestamp", "email", "เลขบัตร"].includes(field.name)) {
+                inputHtml = `<input type="text" class="form-control" id="${safeFieldName}" name="${safeFieldName}" value="${value}" data-field-index="${field.index}" readonly>`;
+            } else if (field.name === "คำนำหน้า") {
+                inputHtml = `
+                    <select class="form-select" id="${safeFieldName}" name="${safeFieldName}" data-field-index="${field.index}">
+                        ${prefixes.map(prefix => `<option value="${prefix}" ${value === prefix ? 'selected' : ''}>${prefix}</option>`).join('')}
+                    </select>`;
+            } else if (field.name === "กลุ่มสาระการเรียนรู้") {
+                inputHtml = `
+                    <select class="form-select" id="${safeFieldName}" name="${safeFieldName}" data-field-index="${field.index}">
+                        ${departments.map(dept => `<option value="${dept}" ${value === dept ? 'selected' : ''}>${dept}</option>`).join('')}
+                    </select>`;
+            } else if (field.name === "ระดับชั้นที่สอน 2/66" || field.name === "ระดับชั้นที่สอน 1/67") {
+                const selectedClasses = value.split(', ');
+                inputHtml = `
+                    <select class="form-select" id="${safeFieldName}" name="${safeFieldName}" data-field-index="${field.index}" multiple>
+                        ${classLevels.map(level => `<option value="${level}" ${selectedClasses.includes(level) ? 'selected' : ''}>${level}</option>`).join('')}
+                    </select>`;
+            } else if (field.name === "เบอร์โทรศัพท์") {
+                inputHtml = `<input type="text" class="form-control" id="${safeFieldName}" name="${safeFieldName}" value="${value}" data-field-index="${field.index}" pattern="[0-9]*" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">`;
+            } else if (["ส่วนที่ 1.ชั่วโมงสอนตามตารางสอน", "ส่วนที่ 2.งานส่งเสริมและสนับสนุนการจัดการเรียนรู้", "ส่วนที่ 3.งานพัฒนาคุณภาพการศึกษาของสถานศึกษา (งาน)", "ส่วนที่ 3.งานพัฒนาคุณภาพการศึกษาของสถานศึกษา (ชั่วโมง)", "ส่วนที่ 4.งานตอบสนองนโยบายและจุดเน้น"].includes(field.name)) {
+                // Allow both text and numbers
+                inputHtml = `<input type="text" class="form-control" id="${safeFieldName}" name="${safeFieldName}" value="${value}" data-field-index="${field.index}">`;
+            } else {
+                inputHtml = `<input type="text" class="form-control" id="${safeFieldName}" name="${safeFieldName}" value="${value}" data-field-index="${field.index}">`;
+            }
+
+            form.append(`
+                <div class="mb-3">
+                    <label for="${safeFieldName}" class="form-label">${field.name}</label>
+                    ${inputHtml}
+                </div>
+            `);
+        });
+
+        // เพิ่มฟิลด์เพิ่มเติมที่ท้ายฟอร์ม
+        form.append(`
+            <div class="mb-3">
+                <input type="text" class="form-control" value="${result[17] || ''}" hidden>
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" value="${result[18] || ''}" hidden>
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" value="${result[19] || ''}" hidden>
+            </div>
+        `);
+
+        console.log('Current Editing Data:', currentEditingData);
+    } else {
+        Swal.fire('ข้อผิดพลาด', 'ไม่พบข้อมูลที่ต้องการแก้ไข', 'error');
+    }
+}
+
+
+
+
+$('#saveChanges').click(function() {
+    if (!currentEditingData) {
+        Swal.fire('ข้อผิดพลาด', 'ไม่พบข้อมูลที่กำลังแก้ไข', 'error');
+        return;
+    }
+
+    const updatedData = [...currentEditingData];
+    let hasChanges = false;
+
+    $('#editForm').find('input, select').each(function() {
+        const fieldIndex = $(this).data('field-index');
+        if (fieldIndex !== undefined) {
+            let value = $(this).val();
+            let originalValue = currentEditingData[fieldIndex];
+            if ($(this).prop('multiple')) {
+                value = Array.isArray(value) ? value.join(', ') : value;
+                originalValue = Array.isArray(originalValue) ? originalValue.join(', ') : originalValue;
+            }
+            if (fieldIndex === 2) {
+                value = value !== '' && !isNaN(value) ? Number(value) : value;
+            } else if (fieldIndex >= 12 && fieldIndex <= 16) {
+                value = value.toString();
+                originalValue = originalValue.toString();
+            }
+            if (String(value) !== String(originalValue)) {
+                hasChanges = true;
+                updatedData[fieldIndex] = value;
+            }
+        }
+    });
+
+    if (!hasChanges) {
+        Swal.fire('แจ้งเตือน', 'ไม่พบการเปลี่ยนแปลงข้อมูล', 'info');
+        return;
+    }
+
+    Swal.fire({
+        title: 'กำลังบันทึกข้อมูล...',
+        text: 'กรุณารอสักครู่',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    // ตรวจสอบว่า LIFF ถูก initialized และ user logged in หรือไม่
+    if (liff.isLoggedIn()) {
+        liff.getProfile().then(profile => {
+            updatedData[17] = profile.userId;
+            updatedData[18] = profile.pictureUrl;
+            updatedData[19] = new Date().toISOString();
+            sendUpdateRequest(updatedData);
+        }).catch(err => {
+            console.error('Error getting profile:', err);
+            // ถ้าไม่สามารถดึงข้อมูลโปรไฟล์ได้ ให้บันทึกโดยไม่มีข้อมูล LINE
+            updatedData[17] = '';
+            updatedData[18] = '';
+            updatedData[19] = new Date().toISOString();
+            sendUpdateRequest(updatedData);
+        });
+    } else {
+        // ถ้าไม่ได้ login ให้บันทึกโดยไม่มีข้อมูล LINE
+        updatedData[17] = '';
+        updatedData[18] = '';
+        updatedData[19] = new Date().toISOString();
+        sendUpdateRequest(updatedData);
+    }
+});
+
+function sendUpdateRequest(updatedData) {
+    $.ajax({
+        url: 'https://script.google.com/macros/s/AKfycbyEkaEfaPx8fS0dEqqW2HpLo6PioNcCbdLutFkcrl4ebsV-yPzuI8RzEaugZ9uE8snrPA/exec',
+        method: 'GET',
+        dataType: 'json',
+        data: {
+            action: 'update',
+            data: JSON.stringify(updatedData)
+        },
+        success: function(response) {
+            console.log('Server response:', response);
+            if (response.success) {
+                Swal.fire('สำเร็จ', 'อัปเดตข้อมูลเรียบร้อยแล้ว', 'success');
+                $('#editModal').modal('hide');
+                loadDataTable();
+            } else {
+                Swal.fire('ข้อผิดพลาด', response.message || 'ไม่สามารถอัปเดตข้อมูลได้', 'error');
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("เกิดข้อผิดพลาดในการส่งคำขอ:", textStatus, errorThrown);
+            Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้', 'error');
+        }
+    });
+}
+
+/// nav โหลดลิงก์กรอกข้อมูล
+function loadSubmenuLinks() {
+    $.ajax({
+        url: 'https://script.google.com/macros/s/AKfycbxTS8B6f0H2cPQWNxtpJvwMXF4c-SuOPK65A9j-9NTXNIkZ5eL1gJaLiJF0MjTlZhdI/exec',
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            // โหลดเมนูสำหรับ 'Link กรอกข้อมูล'
+            const submenuContainer = $('#submenuContainer');
+            submenuContainer.empty();
+            data.linksForDataEntry.forEach(function(item) {
+                const submenuItem = `<li><a class="dropdown-item" href="${item.Link}" target="_blank" onclick="incrementClickCount('${item.Link}', 'dataEntry')">${item['ชื่อที่แสดง']}</a></li>`;
+                submenuContainer.append(submenuItem);
+            });
+
+            // โหลดเมนูสำหรับ 'Link ข้อมูลชั่วโมงการปฏิบัติการสอน'
+            const hoursDataSubmenu = $('#hoursDataSubmenu');
+            hoursDataSubmenu.empty();
+            data.linksForHoursData.forEach(function(item) {
+                // เปลี่ยนจาก target="_blank" เป็น target="_self"
+                const submenuItem = `<li><a class="dropdown-item" href="${item.Link}" target="_self" onclick="incrementClickCount('${item.Link}', 'hoursData')">${item['ชื่อที่แสดง']}</a></li>`;
+                hoursDataSubmenu.append(submenuItem);
+            });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error loading submenu links:', textStatus, errorThrown);
+        }
+    });
+}
+
+
+    window.addEventListener('scroll', function() {
+        var navbar = document.getElementById('mainNavbar');
+        if (window.scrollY > 50) {
+            navbar.classList.remove('bg-danger', 'navbar-dark');
+            navbar.classList.add('bg-light', 'navbar-light', 'navbar-light-red');
+        } else {
+            navbar.classList.remove('bg-light', 'navbar-light', 'navbar-light-red');
+            navbar.classList.add('bg-danger', 'navbar-dark');
+        }
+    });
+});
+      
+      function incrementClickCount(link, sheet) {
+    $.ajax({
+        url: 'https://script.google.com/macros/s/AKfycbxTS8B6f0H2cPQWNxtpJvwMXF4c-SuOPK65A9j-9NTXNIkZ5eL1gJaLiJF0MjTlZhdI/exec', // เปลี่ยน URL ให้ตรงกับ Google Apps Script ของคุณ
+        method: 'POST',
+        data: {
+            action: 'incrementClick',
+            link: link,
+            sheet: sheet // ระบุชื่อ sheet ที่จะอัปเดต count
+        },
+        success: function(response) {
+            console.log('Click count updated:', response);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error updating click count:', textStatus, errorThrown);
+        }
+    });
+}
+    </script>
+</body>
+</html>
